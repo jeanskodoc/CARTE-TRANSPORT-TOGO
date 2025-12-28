@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Carte Digitale Conducteur ESODI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #17a2b8;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-preview-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .vehicle-type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-type {
+            text-align: center;
+            padding: 15px 10px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vehicle-type:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .vehicle-type.selected {
+            border-color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .vehicle-type i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .parts-section {
+            margin-top: 30px;
+        }
+
+        .parts-checklist {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .part-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .part-item input {
+            width: auto;
+        }
+
+        .part-item label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Styles spécifiques pour la carte avec filigrane ESODI */
+        .digital-card {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Filigrane ESODI oblique */
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.08;
+            overflow: hidden;
+        }
+
+        .watermark-text {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 2.5rem;
+            font-weight: bold;
+            transform: rotate(-45deg);
+            white-space: nowrap;
+        }
+
+        .watermark-text:nth-child(1) { top: 10%; left: -20%; }
+        .watermark-text:nth-child(2) { top: 30%; left: -10%; }
+        .watermark-text:nth-child(3) { top: 50%; left: 0%; }
+        .watermark-text:nth-child(4) { top: 70%; left: 10%; }
+        .watermark-text:nth-child(5) { top: 90%; left: 20%; }
+        .watermark-text:nth-child(6) { top: 20%; left: 40%; }
+        .watermark-text:nth-child(7) { top: 40%; left: 50%; }
+        .watermark-text:nth-child(8) { top: 60%; left: 60%; }
+        .watermark-text:nth-child(9) { top: 80%; left: 70%; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card-logo {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .card-body {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .driver-photo {
+            width: 100px;
+            height: 120px;
+            background-color: #4a6572;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .driver-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .info-item h4 {
+            font-size: 0.8rem;
+            color: #bdc3c7;
+            margin-bottom: 5px;
+        }
+
+        .info-item p {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            font-size: 0.8rem;
+            color: #bdc3c7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .qr-code {
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Version imprimable de la carte A5 recto-verso */
+        .printable-card {
+            display: none;
+        }
+
+        /* Styles d'impression pour format A5 recto-verso */
+        @media print {
+            body * {
+                visibility: hidden;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .printable-card, .printable-card * {
+                visibility: visible;
+            }
+            
+            .printable-card {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                display: block !important;
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Format A5 (148mm x 210mm) */
+            .a5-card {
+                width: 148mm;
+                height: 210mm;
+                margin: 0 auto;
+                page-break-after: always;
+                position: relative;
+                box-sizing: border-box;
+            }
+            
+            /* Recto de la carte */
+            .card-front {
+                background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+                color: white;
+                padding: 15mm;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            
+            /* Verso de la carte */
+            .card-back {
+                background: white;
+                color: #333;
+                padding: 15mm;
+                height: 100%;
+                border: 1px solid #ddd;
+            }
+            
+            /* Filigrane pour l'impression */
+            .print-watermark {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+                opacity: 0.05;
+                overflow: hidden;
+            }
+            
+            .print-watermark-text {
+                position: absolute;
+                color: rgba(0, 0, 0, 0.1);
+                font-size: 3rem;
+                font-weight: bold;
+                transform: rotate(-45deg);
+                white-space: nowrap;
+            }
+            
+            .print-watermark-text:nth-child(1) { top: 5%; left: -25%; }
+            .print-watermark-text:nth-child(2) { top: 20%; left: -15%; }
+            .print-watermark-text:nth-child(3) { top: 35%; left: -5%; }
+            .print-watermark-text:nth-child(4) { top: 50%; left: 5%; }
+            .print-watermark-text:nth-child(5) { top: 65%; left: 15%; }
+            .print-watermark-text:nth-child(6) { top: 80%; left: 25%; }
+            .print-watermark-text:nth-child(7) { top: 95%; left: 35%; }
+            
+            /* Pour la carte avant */
+            .front-watermark .print-watermark-text {
+                color: rgba(255, 255, 255, 0.1);
+            }
+            
+            /* Style pour forcer l'impression recto-verso */
+            @page {
+                size: A5;
+                margin: 0;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Optimisation du contenu pour A5 */
+            .print-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10mm;
+                position: relative;
+                z-index: 2;
+            }
+            
+            .print-card-title {
+                font-size: 1.8rem;
+                font-weight: 700;
+            }
+            
+            .print-driver-photo {
+                width: 80px;
+                height: 100px;
+                background-color: #4a6572;
+                border-radius: 5px;
+                margin-bottom: 10mm;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                color: #bdc3c7;
+                position: relative;
+                z-index: 2;
+            }
+            
+            .print-driver-info {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                margin-bottom: 10mm;
+                position: relative;
+                z-index: 2;
+            }
+            
+            .print-info-item h4 {
+                font-size: 0.7rem;
+                color: #bdc3c7;
+                margin-bottom: 2px;
+            }
+            
+            .print-info-item p {
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+            
+            .print-card-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding-top: 5mm;
+                font-size: 0.7rem;
+                color: #bdc3c7;
+                position: relative;
+                z-index: 2;
+            }
+            
+            /* Style pour le verso */
+            .back-title {
+                font-size: 1.5rem;
+                color: #2c3e50;
+                margin-bottom: 8mm;
+                text-align: center;
+            }
+            
+            .back-content {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+            
+            .back-section {
+                margin-bottom: 8mm;
+            }
+            
+            .back-section h3 {
+                color: #2c3e50;
+                margin-bottom: 3mm;
+                font-size: 1.1rem;
+            }
+            
+            .back-parts-list {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 3px;
+                font-size: 0.8rem;
+            }
+            
+            .back-part-item {
+                padding: 2px 0;
+                border-bottom: 1px dashed #eee;
+                display: flex;
+                align-items: center;
+            }
+            
+            .back-part-status {
+                margin-right: 5px;
+                font-weight: bold;
+            }
+            
+            .back-qr-code {
+                width: 60px;
+                height: 60px;
+                background-color: #f0f0f0;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 5mm auto;
+                font-size: 0.6rem;
+                font-weight: bold;
+                text-align: center;
+                padding: 5px;
+            }
+            
+            .signature-area {
+                margin-top: 10mm;
+                padding-top: 3mm;
+                border-top: 1px solid #ddd;
+                text-align: center;
+                font-size: 0.8rem;
+                color: #666;
+            }
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pieces-list {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+        }
+
+        .piece-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .piece-item:last-child {
+            border-bottom: none;
+        }
+
+        .piece-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-required {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent);
+        }
+
+        .status-optional {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-checked {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        /* Nouveaux styles pour la gestion des cartes */
+        .cards-management {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+        }
+
+        .filter-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .filter-group {
+            margin-bottom: 0;
+        }
+
+        .cards-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .card-item.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .card-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .card-item-type {
+            font-size: 0.8rem;
+            background-color: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .card-item-details {
+            font-size: 0.85rem;
+            color: #666;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .cards-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .json-editor {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--accent);
+        }
+
+        .notification.info {
+            background-color: var(--info);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .vehicle-type-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .parts-checklist {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .cards-actions {
+                flex-direction: column;
+            }
+            
+            .cards-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-id-card"></i>
+                    <div>
+                        <h1>Générateur de Carte Digitale Conducteur ESODI</h1>
+                        <p class="tagline">Pour moto, véhicule tricycle et autres véhicules</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="avatar">ES</div>
+                    <div>
+                        <p>Système ESODI</p>
+                        <p style="font-size: 0.8rem;">Carte Officielle</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">Informations du Conducteur</h2>
+                <form id="driverForm">
+                    <div class="form-group">
+                        <label for="fullName">Nom complet</label>
+                        <input type="text" id="fullName" placeholder="Ex: Jean Dupont" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="licenseNumber">Numéro de permis</label>
+                            <input type="text" id="licenseNumber" placeholder="Ex: 123456789A" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="licenseType">Catégorie de permis</label>
+                            <select id="licenseType" required>
+                                <option value="">Sélectionner</option>
+                                <option value="A">A (Moto)</option>
+                                <option value="B">B (Voiture)</option>
+                                <option value="B1">B1 (Tricycle)</option>
+                                <option value="C">C (Poids lourd)</option>
+                                <option value="D">D (Transport de personnes)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type de véhicule</label>
+                        <div class="vehicle-type-selector">
+                            <div class="vehicle-type selected" data-type="moto">
+                                <i class="fas fa-motorcycle"></i>
+                                <p>Moto</p>
+                            </div>
+                            <div class="vehicle-type" data-type="tricycle">
+                                <i class="fas fa-tricycle"></i>
+                                <p>Tricycle</p>
+                            </div>
+                            <div class="vehicle-type" data-type="other">
+                                <i class="fas fa-car"></i>
+                                <p>Autre</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="vehicleModel">Modèle du véhicule</label>
+                            <input type="text" id="vehicleModel" placeholder="Ex: Yamaha MT-07" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleYear">Année du véhicule</label>
+                            <input type="number" id="vehicleYear" placeholder="Ex: 2022" min="1990" max="2024" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehiclePlate">Plaque d'immatriculation</label>
+                        <input type="text" id="vehiclePlate" placeholder="Ex: AB-123-CD" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes supplémentaires</label>
+                        <textarea id="notes" rows="3" placeholder="Informations complémentaires..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-sync-alt"></i> Mettre à jour
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="saveCardBtn" class="btn btn-success btn-block">
+                                <i class="fas fa-save"></i> Sauvegarder
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <button type="button" id="newCardBtn" class="btn btn-info btn-block">
+                                <i class="fas fa-plus-circle"></i> Nouvelle Carte
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="printCardBtn" class="btn btn-warning btn-block">
+                                <i class="fas fa-print"></i> Imprimer Carte A5
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="parts-section">
+                    <h2 class="section-title">Pièces à vérifier</h2>
+                    <div class="parts-checklist" id="partsList">
+                        <!-- Les pièces seront générées dynamiquement selon le type de véhicule -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-preview-section">
+                <h2 class="section-title">Prévisualisation de la carte</h2>
+                <div class="digital-card" id="cardPreview">
+                    <!-- Filigrane ESODI -->
+                    <div class="watermark" id="watermark">
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                        <div class="watermark-text">ESODI</div>
+                    </div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">CARTE CONDUCTEUR ESODI</div>
+                        <div class="card-logo">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="driver-photo">
+                            PHOTO<br>CONDUCTEUR
+                        </div>
+                        
+                        <div class="driver-info">
+                            <div class="info-item">
+                                <h4>Nom complet</h4>
+                                <p id="preview-name">Jean Dupont</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>Numéro de permis</h4>
+                                <p id="preview-license">123456789A</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>Catégorie</h4>
+                                <p id="preview-category">A (Moto)</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>Véhicule</h4>
+                                <p id="preview-vehicle">Yamaha MT-07</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>Immatriculation</h4>
+                                <p id="preview-plate">AB-123-CD</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>Année</h4>
+                                <p id="preview-year">2022</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div>
+                            <p>Date d'émission: <span id="preview-date">15/06/2024</span></p>
+                            <p>Valide jusqu'au: <span id="preview-validity">15/06/2025</span></p>
+                        </div>
+                        <div class="qr-code">
+                            QR CODE
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-success" id="downloadPdfBtn">
+                        <i class="fas fa-download"></i> Télécharger PDF
+                    </button>
+                    <button class="btn btn-primary" id="generateQrBtn">
+                        <i class="fas fa-qrcode"></i> Générer QR Code
+                    </button>
+                    <button class="btn btn-info" id="exportJsonBtn">
+                        <i class="fas fa-file-export"></i> Exporter JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carte imprimable A5 recto-verso (cachée par défaut) -->
+        <div class="printable-card" id="printableCard">
+            <!-- Recto de la carte -->
+            <div class="a5-card card-front">
+                <div class="front-watermark print-watermark">
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                </div>
+                
+                <div class="print-card-header">
+                    <div class="print-card-title">CARTE CONDUCTEUR ESODI</div>
+                    <div style="font-size: 1.5rem; color: #3498db;">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="print-driver-photo">
+                        PHOTO<br>CONDUCTEUR
+                    </div>
+                    
+                    <div class="print-driver-info">
+                        <div class="print-info-item">
+                            <h4>Nom complet</h4>
+                            <p id="print-name">Jean Dupont</p>
+                        </div>
+                        <div class="print-info-item">
+                            <h4>Numéro de permis</h4>
+                            <p id="print-license">123456789A</p>
+                        </div>
+                        <div class="print-info-item">
+                            <h4>Catégorie</h4>
+                            <p id="print-category">A (Moto)</p>
+                        </div>
+                        <div class="print-info-item">
+                            <h4>Véhicule</h4>
+                            <p id="print-vehicle">Yamaha MT-07</p>
+                        </div>
+                        <div class="print-info-item">
+                            <h4>Immatriculation</h4>
+                            <p id="print-plate">AB-123-CD</p>
+                        </div>
+                        <div class="print-info-item">
+                            <h4>Année</h4>
+                            <p id="print-year">2022</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="print-card-footer">
+                    <div>
+                        <p>Date d'émission: <span id="print-date">15/06/2024</span></p>
+                        <p>Valide jusqu'au: <span id="print-validity">15/06/2025</span></p>
+                        <p style="margin-top: 2mm; font-size: 0.6rem;">Carte officielle - Système ESODI</p>
+                    </div>
+                    <div class="qr-code" style="background-color: white; width: 50px; height: 50px; font-size: 0.6rem;">
+                        QR
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Verso de la carte -->
+            <div class="a5-card card-back">
+                <div class="print-watermark">
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                    <div class="print-watermark-text">ESODI</div>
+                </div>
+                
+                <div class="back-title">INFORMATIONS SUPPLÉMENTAIRES</div>
+                
+                <div class="back-content">
+                    <div class="back-section">
+                        <h3>Notes</h3>
+                        <p id="print-notes" style="font-style: italic;">-</p>
+                    </div>
+                    
+                    <div class="back-section">
+                        <h3>Pièces obligatoires vérifiées</h3>
+                        <div class="back-parts-list" id="print-parts">
+                            <!-- Les pièces seront insérées ici -->
+                        </div>
+                    </div>
+                    
+                    <div class="back-section">
+                        <h3>Code de vérification</h3>
+                        <div class="back-qr-code">
+                            SCANNEZ<br>POUR<br>VÉRIFIER
+                        </div>
+                        <p style="text-align: center; font-size: 0.7rem;">Scannez ce code QR pour vérifier l'authenticité de cette carte</p>
+                    </div>
+                    
+                    <div class="signature-area">
+                        <p>Signature du responsable :</p>
+                        <div style="height: 20px; border-bottom: 1px solid #999; width: 60%; margin: 5px auto;"></div>
+                        <p style="margin-top: 5px;">Cachet officiel ESODI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cards-management">
+            <h2 class="section-title">Gestion des Cartes</h2>
+            
+            <div class="filter-section">
+                <div class="form-group filter-group">
+                    <label for="filterType">Filtrer par type de véhicule</label>
+                    <select id="filterType">
+                        <option value="all">Tous les types</option>
+                        <option value="moto">Moto</option>
+                        <option value="tricycle">Tricycle</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+                
+                <div class="form-group filter-group">
+                    <label for="filterLicense">Filtrer par catégorie de permis</label>
+                    <select id="filterLicense">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="A">A (Moto)</option>
+                        <option value="B">B (Voiture)</option>
+                        <option value="B1">B1 (Tricycle)</option>
+                        <option value="C">C (Poids lourd)</option>
+                        <option value="D">D (Transport de personnes)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group filter-group">
+                    <label for="filterSearch">Recherche par nom</label>
+                    <input type="text" id="filterSearch" placeholder="Nom du conducteur...">
+                </div>
+            </div>
+            
+            <div class="cards-list" id="cardsList">
+                <!-- Les cartes sauvegardées apparaîtront ici -->
+            </div>
+            
+            <div class="cards-actions">
+                <button class="btn btn-info" id="importJsonBtn">
+                    <i class="fas fa-file-import"></i> Importer JSON
+                </button>
+                <button class="btn btn-warning" id="editDataBtn">
+                    <i class="fas fa-edit"></i> Modifier les données
+                </button>
+                <button class="btn btn-danger" id="clearAllBtn">
+                    <i class="fas fa-trash-alt"></i> Tout effacer
+                </button>
+            </div>
+        </div>
+        
+        <div class="pieces-list">
+            <h2 class="section-title">Liste des pièces nécessaires</h2>
+            <div id="requiredParts">
+                <!-- Les pièces nécessaires seront générées dynamiquement -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal pour l'éditeur JSON -->
+    <div class="modal" id="jsonModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Éditeur JSON</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <textarea class="json-editor" id="jsonEditor" placeholder='{"fullName": "Jean Dupont", "licenseNumber": "123456789A", ...}'></textarea>
+            <div class="form-row">
+                <div class="form-group">
+                    <button class="btn btn-success btn-block" id="applyJsonBtn">
+                        <i class="fas fa-check"></i> Appliquer les données
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" id="loadExampleJsonBtn">
+                        <i class="fas fa-code"></i> Charger un exemple
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2024 Générateur de Carte Digitale Conducteur ESODI. Tous droits réservés.</p>
+            <p>Système officiel de génération de cartes pour conducteurs de moto, tricycle et autres véhicules.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Données des pièces par type de véhicule
+        const vehicleParts = {
+            moto: [
+                { id: 1, name: "Permis de conduire catégorie A", required: true, checked: true },
+                { id: 2, name: "Carte grise (certificat d'immatriculation)", required: true, checked: true },
+                { id: 3, name: "Assurance moto", required: true, checked: true },
+                { id: 4, name: "Contrôle technique (si > 4 ans)", required: true, checked: false },
+                { id: 5, name: "Casque homologué", required: true, checked: true },
+                { id: 6, name: "Gants homologués", required: true, checked: true },
+                { id: 7, name: "Veste de protection", required: false, checked: false },
+                { id: 8, name: "Pneus (état et pression)", required: true, checked: true },
+                { id: 9, name: "Freins (avant et arrière)", required: true, checked: true },
+                { id: 10, name: "Éclairage (feux avant, arrière, clignotants)", required: true, checked: true },
+                { id: 11, name: "Rétroviseurs", required: true, checked: true },
+                { id: 12, name: "Avertisseur sonore", required: true, checked: true }
+            ],
+            tricycle: [
+                { id: 1, name: "Permis de conduire catégorie B1", required: true, checked: true },
+                { id: 2, name: "Carte grise (certificat d'immatriculation)", required: true, checked: true },
+                { id: 3, name: "Assurance tricycle", required: true, checked: true },
+                { id: 4, name: "Contrôle technique (si > 4 ans)", required: true, checked: false },
+                { id: 5, name: "Casque homologué (si sans carrosserie fermée)", required: true, checked: true },
+                { id: 6, name: "Ceintures de sécurité", required: true, checked: true },
+                { id: 7, name: "Pneus (état et pression)", required: true, checked: true },
+                { id: 8, name: "Freins (disques/tambours)", required: true, checked: true },
+                { id: 9, name: "Éclairage (feux avant, arrière, clignotants)", required: true, checked: true },
+                { id: 10, name: "Rétroviseurs (intérieur et extérieurs)", required: true, checked: true },
+                { id: 11, name: "Avertisseur sonore", required: true, checked: true },
+                { id: 12, name: "Extincteur (recommandé)", required: false, checked: false }
+            ],
+            other: [
+                { id: 1, name: "Permis de conduire adapté", required: true, checked: true },
+                { id: 2, name: "Carte grise (certificat d'immatriculation)", required: true, checked: true },
+                { id: 3, name: "Assurance véhicule", required: true, checked: true },
+                { id: 4, name: "Contrôle technique à jour", required: true, checked: false },
+                { id: 5, name: "Ceintures de sécurité", required: true, checked: true },
+                { id: 6, name: "Pneus (état, pression et usure)", required: true, checked: true },
+                { id: 7, name: "Système de freinage", required: true, checked: true },
+                { id: 8, name: "Éclairage et signalisation", required: true, checked: true },
+                { id: 9, name: "Rétroviseurs", required: true, checked: true },
+                { id: 10, name: "Avertisseur sonore", required: true, checked: true },
+                { id: 11, name: "Kit de sécurité (triangle, gilet)", required: true, checked: true },
+                { id: 12, name: "Dispositif de limitation de vitesse (si applicable)", required: false, checked: false }
+            ]
+        };
+
+        // Éléments DOM
+        const vehicleTypeElements = document.querySelectorAll('.vehicle-type');
+        const driverForm = document.getElementById('driverForm');
+        const partsList = document.getElementById('partsList');
+        const requiredParts = document.getElementById('requiredParts');
+        
+        // Éléments de prévisualisation
+        const previewName = document.getElementById('preview-name');
+        const previewLicense = document.getElementById('preview-license');
+        const previewCategory = document.getElementById('preview-category');
+        const previewVehicle = document.getElementById('preview-vehicle');
+        const previewPlate = document.getElementById('preview-plate');
+        const previewYear = document.getElementById('preview-year');
+        const previewDate = document.getElementById('preview-date');
+        const previewValidity = document.getElementById('preview-validity');
+        
+        // Éléments pour l'impression
+        const printName = document.getElementById('print-name');
+        const printLicense = document.getElementById('print-license');
+        const printCategory = document.getElementById('print-category');
+        const printVehicle = document.getElementById('print-vehicle');
+        const printPlate = document.getElementById('print-plate');
+        const printYear = document.getElementById('print-year');
+        const printDate = document.getElementById('print-date');
+        const printValidity = document.getElementById('print-validity');
+        const printNotes = document.getElementById('print-notes');
+        const printParts = document.getElementById('print-parts');
+        
+        // Éléments de gestion
+        const cardsList = document.getElementById('cardsList');
+        const filterType = document.getElementById('filterType');
+        const filterLicense = document.getElementById('filterLicense');
+        const filterSearch = document.getElementById('filterSearch');
+        const saveCardBtn = document.getElementById('saveCardBtn');
+        const newCardBtn = document.getElementById('newCardBtn');
+        const printCardBtn = document.getElementById('printCardBtn');
+        const exportJsonBtn = document.getElementById('exportJsonBtn');
+        const importJsonBtn = document.getElementById('importJsonBtn');
+        const editDataBtn = document.getElementById('editDataBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const generateQrBtn = document.getElementById('generateQrBtn');
+        
+        // Éléments modaux
+        const jsonModal = document.getElementById('jsonModal');
+        const jsonEditor = document.getElementById('jsonEditor');
+        const applyJsonBtn = document.getElementById('applyJsonBtn');
+        const loadExampleJsonBtn = document.getElementById('loadExampleJsonBtn');
+        const closeModal = document.querySelector('.close-modal');
+        
+        // Notification
+        const notification = document.getElementById('notification');
+        
+        // Variables globales
+        let selectedVehicleType = 'moto';
+        let savedCards = [];
+        let currentCardId = null;
+        
+        // Clé pour le stockage local
+        const STORAGE_KEY = 'driverCardsData';
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Définir la date actuelle
+            const today = new Date();
+            const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+            
+            const formatDate = (date) => {
+                return date.toLocaleDateString('fr-FR');
+            };
+            
+            previewDate.textContent = formatDate(today);
+            previewValidity.textContent = formatDate(nextYear);
+            printDate.textContent = formatDate(today);
+            printValidity.textContent = formatDate(nextYear);
+            
+            // Initialiser les types de véhicules
+            initVehicleTypeSelector();
+            
+            // Initialiser les listes de pièces
+            updatePartsList();
+            
+            // Charger les cartes sauvegardées
+            loadSavedCards();
+            
+            // Écouteurs d'événements
+            driverForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateCardPreview();
+            });
+            
+            saveCardBtn.addEventListener('click', saveCard);
+            newCardBtn.addEventListener('click', createNewCard);
+            printCardBtn.addEventListener('click', printCard);
+            exportJsonBtn.addEventListener('click', exportCardToJson);
+            importJsonBtn.addEventListener('click', importCardFromJson);
+            editDataBtn.addEventListener('click', openJsonEditor);
+            clearAllBtn.addEventListener('click', clearAllCards);
+            downloadPdfBtn.addEventListener('click', downloadAsPdf);
+            generateQrBtn.addEventListener('click', generateQrCode);
+            
+            // Filtres
+            filterType.addEventListener('change', filterCards);
+            filterLicense.addEventListener('change', filterCards);
+            filterSearch.addEventListener('input', filterCards);
+            
+            // Modal
+            applyJsonBtn.addEventListener('click', applyJsonData);
+            loadExampleJsonBtn.addEventListener('click', loadExampleJson);
+            closeModal.addEventListener('click', closeJsonModal);
+            
+            // Fermer le modal en cliquant en dehors
+            window.addEventListener('click', function(e) {
+                if (e.target === jsonModal) {
+                    closeJsonModal();
+                }
+            });
+            
+            // Remplir avec des données d'exemple
+            fillExampleData();
+        });
+        
+        function initVehicleTypeSelector() {
+            vehicleTypeElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    // Retirer la classe selected de tous les éléments
+                    vehicleTypeElements.forEach(el => el.classList.remove('selected'));
+                    
+                    // Ajouter la classe selected à l'élément cliqué
+                    this.classList.add('selected');
+                    
+                    // Mettre à jour le type de véhicule sélectionné
+                    selectedVehicleType = this.getAttribute('data-type');
+                    
+                    // Mettre à jour la liste des pièces
+                    updatePartsList();
+                });
+            });
+        }
+        
+        function updatePartsList() {
+            const parts = vehicleParts[selectedVehicleType];
+            
+            // Mettre à jour la liste de vérification
+            partsList.innerHTML = '';
+            requiredParts.innerHTML = '';
+            
+            parts.forEach(part => {
+                // Créer l'élément pour la liste de vérification
+                const partCheckItem = document.createElement('div');
+                partCheckItem.className = 'part-item';
+                partCheckItem.innerHTML = `
+                    <input type="checkbox" id="part-${part.id}" ${part.checked ? 'checked' : ''}>
+                    <label for="part-${part.id}">${part.name}</label>
+                `;
+                partsList.appendChild(partCheckItem);
+                
+                // Ajouter un écouteur d'événement pour la case à cocher
+                const checkbox = partCheckItem.querySelector('input');
+                checkbox.addEventListener('change', function() {
+                    part.checked = this.checked;
+                    updateRequiredPartsList();
+                    updatePrintableParts();
+                });
+                
+                // Créer l'élément pour la liste des pièces nécessaires
+                const partListItem = document.createElement('div');
+                partListItem.className = 'piece-item';
+                const statusClass = part.required ? 'status-required' : 'status-optional';
+                const statusText = part.required ? 'Obligatoire' : 'Optionnel';
+                
+                partListItem.innerHTML = `
+                    <div>
+                        <h3>${part.name}</h3>
+                        <p>${part.required ? 'Pièce obligatoire pour la circulation' : 'Pièce recommandée pour la sécurité'}</p>
+                    </div>
+                    <div class="piece-status ${statusClass}">${statusText}</div>
+                `;
+                requiredParts.appendChild(partListItem);
+            });
+            
+            // Mettre à jour également la liste des pièces pour l'impression
+            updatePrintableParts();
+        }
+        
+        function updateRequiredPartsList() {
+            const parts = vehicleParts[selectedVehicleType];
+            
+            // Mettre à jour l'affichage des pièces avec leur état
+            requiredParts.innerHTML = '';
+            
+            parts.forEach(part => {
+                const partListItem = document.createElement('div');
+                partListItem.className = 'piece-item';
+                
+                let statusClass, statusText;
+                
+                if (part.required) {
+                    statusClass = part.checked ? 'status-checked' : 'status-required';
+                    statusText = part.checked ? 'Vérifiée' : 'Obligatoire';
+                } else {
+                    statusClass = part.checked ? 'status-checked' : 'status-optional';
+                    statusText = part.checked ? 'Vérifiée' : 'Optionnel';
+                }
+                
+                partListItem.innerHTML = `
+                    <div>
+                        <h3>${part.name}</h3>
+                        <p>${part.required ? 'Pièce obligatoire pour la circulation' : 'Pièce recommandée pour la sécurité'}</p>
+                    </div>
+                    <div class="piece-status ${statusClass}">${statusText}</div>
+                `;
+                requiredParts.appendChild(partListItem);
+            });
+        }
+        
+        function updatePrintableParts() {
+            const parts = vehicleParts[selectedVehicleType];
+            printParts.innerHTML = '';
+            
+            parts.forEach(part => {
+                if (part.required) {
+                    const partElement = document.createElement('div');
+                    partElement.className = 'back-part-item';
+                    const statusSymbol = part.checked ? '✓' : '○';
+                    const statusColor = part.checked ? '#27ae60' : '#e74c3c';
+                    
+                    partElement.innerHTML = `
+                        <span class="back-part-status" style="color: ${statusColor};">${statusSymbol}</span>
+                        ${part.name}
+                    `;
+                    printParts.appendChild(partElement);
+                }
+            });
+        }
+        
+        function updateCardPreview() {
+            // Récupérer les valeurs du formulaire
+            const fullName = document.getElementById('fullName').value || 'Jean Dupont';
+            const licenseNumber = document.getElementById('licenseNumber').value || '123456789A';
+            const licenseTypeSelect = document.getElementById('licenseType');
+            const licenseTypeText = licenseTypeSelect.options[licenseTypeSelect.selectedIndex].text || 'A (Moto)';
+            const vehicleModel = document.getElementById('vehicleModel').value || 'Yamaha MT-07';
+            const vehiclePlate = document.getElementById('vehiclePlate').value || 'AB-123-CD';
+            const vehicleYear = document.getElementById('vehicleYear').value || '2022';
+            const notes = document.getElementById('notes').value || '-';
+            
+            // Mettre à jour la prévisualisation
+            previewName.textContent = fullName;
+            previewLicense.textContent = licenseNumber;
+            previewCategory.textContent = licenseTypeText;
+            previewVehicle.textContent = vehicleModel;
+            previewPlate.textContent = vehiclePlate;
+            previewYear.textContent = vehicleYear;
+            
+            // Mettre à jour la version imprimable
+            printName.textContent = fullName;
+            printLicense.textContent = licenseNumber;
+            printCategory.textContent = licenseTypeText;
+            printVehicle.textContent = vehicleModel;
+            printPlate.textContent = vehiclePlate;
+            printYear.textContent = vehicleYear;
+            printNotes.textContent = notes;
+            
+            showNotification('Carte mise à jour avec succès!', 'success');
+        }
+        
+        function getFormData() {
+            const parts = vehicleParts[selectedVehicleType];
+            const partsData = parts.map(part => ({
+                name: part.name,
+                required: part.required,
+                checked: part.checked
+            }));
+            
+            const today = new Date();
+            const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+            
+            return {
+                id: currentCardId || Date.now().toString(),
+                fullName: document.getElementById('fullName').value,
+                licenseNumber: document.getElementById('licenseNumber').value,
+                licenseType: document.getElementById('licenseType').value,
+                licenseTypeText: document.getElementById('licenseType').options[document.getElementById('licenseType').selectedIndex].text,
+                vehicleType: selectedVehicleType,
+                vehicleModel: document.getElementById('vehicleModel').value,
+                vehicleYear: document.getElementById('vehicleYear').value,
+                vehiclePlate: document.getElementById('vehiclePlate').value,
+                notes: document.getElementById('notes').value,
+                parts: partsData,
+                creationDate: today.toISOString(),
+                validityDate: nextYear.toISOString(),
+                lastModified: today.toISOString()
+            };
+        }
+        
+        function setFormData(cardData) {
+            document.getElementById('fullName').value = cardData.fullName;
+            document.getElementById('licenseNumber').value = cardData.licenseNumber;
+            document.getElementById('licenseType').value = cardData.licenseType;
+            document.getElementById('vehicleModel').value = cardData.vehicleModel;
+            document.getElementById('vehicleYear').value = cardData.vehicleYear;
+            document.getElementById('vehiclePlate').value = cardData.vehiclePlate;
+            document.getElementById('notes').value = cardData.notes || '';
+            
+            // Sélectionner le type de véhicule
+            selectedVehicleType = cardData.vehicleType;
+            vehicleTypeElements.forEach(el => {
+                el.classList.remove('selected');
+                if (el.getAttribute('data-type') === selectedVehicleType) {
+                    el.classList.add('selected');
+                }
+            });
+            
+            // Mettre à jour les pièces
+            if (cardData.parts && Array.isArray(cardData.parts)) {
+                const parts = vehicleParts[selectedVehicleType];
+                cardData.parts.forEach((savedPart, index) => {
+                    if (parts[index]) {
+                        parts[index].checked = savedPart.checked || false;
+                    }
+                });
+                updatePartsList();
+            }
+            
+            // Mettre à jour l'ID de la carte courante
+            currentCardId = cardData.id;
+            
+            // Mettre à jour la prévisualisation
+            updateCardPreview();
+        }
+        
+        function createNewCard() {
+            // Réinitialiser le formulaire
+            document.getElementById('fullName').value = '';
+            document.getElementById('licenseNumber').value = '';
+            document.getElementById('licenseType').selectedIndex = 0;
+            document.getElementById('vehicleModel').value = '';
+            document.getElementById('vehicleYear').value = '';
+            document.getElementById('vehiclePlate').value = '';
+            document.getElementById('notes').value = '';
+            
+            // Réinitialiser le type de véhicule
+            selectedVehicleType = 'moto';
+            vehicleTypeElements.forEach(el => {
+                el.classList.remove('selected');
+                if (el.getAttribute('data-type') === 'moto') {
+                    el.classList.add('selected');
+                }
+            });
+            
+            // Réinitialiser les pièces
+            Object.keys(vehicleParts).forEach(type => {
+                vehicleParts[type].forEach(part => {
+                    part.checked = part.name.includes("Permis") || 
+                                 part.name.includes("Carte grise") || 
+                                 part.name.includes("Assurance") ||
+                                 part.name.includes("Casque") ||
+                                 part.name.includes("Ceintures");
+                });
+            });
+            
+            updatePartsList();
+            
+            // Réinitialiser l'ID de la carte courante
+            currentCardId = null;
+            
+            // Mettre à jour la prévisualisation
+            updateCardPreview();
+            
+            // Désélectionner toute carte dans la liste
+            document.querySelectorAll('.card-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            showNotification('Nouvelle carte créée. Remplissez les informations.', 'info');
+        }
+        
+        function printCard() {
+            // Mettre à jour les données d'impression
+            updateCardPreview();
+            updatePrintableParts();
+            
+            // Afficher un message avant l'impression
+            showNotification('Préparation de l\'impression au format A5 recto-verso...', 'info');
+            
+            // Attendre un peu pour que la notification s'affiche
+            setTimeout(() => {
+                // Lancer l'impression
+                window.print();
+                
+                // Réafficher la notification après l'impression
+                setTimeout(() => {
+                    showNotification('Impression au format carte A5 terminée!', 'success');
+                }, 1000);
+            }, 500);
+        }
+        
+        function saveCard() {
+            const cardData = getFormData();
+            
+            // Vérifier si la carte existe déjà
+            const existingIndex = savedCards.findIndex(card => card.id === cardData.id);
+            
+            if (existingIndex !== -1) {
+                // Mettre à jour la carte existante
+                savedCards[existingIndex] = cardData;
+                showNotification('Carte mise à jour avec succès!', 'success');
+            } else {
+                // Ajouter une nouvelle carte
+                savedCards.push(cardData);
+                showNotification('Carte sauvegardée avec succès!', 'success');
+            }
+            
+            // Sauvegarder dans le stockage local
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedCards));
+            
+            // Recharger la liste des cartes
+            loadSavedCards();
+        }
+        
+        function loadSavedCards() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    savedCards = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Erreur lors du chargement des cartes:', e);
+                    savedCards = [];
+                }
+            }
+            
+            filterCards();
+        }
+        
+        function filterCards() {
+            const typeFilter = filterType.value;
+            const licenseFilter = filterLicense.value;
+            const searchFilter = filterSearch.value.toLowerCase();
+            
+            cardsList.innerHTML = '';
+            
+            if (savedCards.length === 0) {
+                cardsList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucune carte sauvegardée</p>';
+                return;
+            }
+            
+            const filteredCards = savedCards.filter(card => {
+                // Filtre par type de véhicule
+                if (typeFilter !== 'all' && card.vehicleType !== typeFilter) {
+                    return false;
+                }
+                
+                // Filtre par catégorie de permis
+                if (licenseFilter !== 'all' && card.licenseType !== licenseFilter) {
+                    return false;
+                }
+                
+                // Filtre par recherche
+                if (searchFilter && !card.fullName.toLowerCase().includes(searchFilter)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            if (filteredCards.length === 0) {
+                cardsList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucune carte ne correspond aux filtres</p>';
+                return;
+            }
+            
+            filteredCards.forEach(card => {
+                const cardItem = document.createElement('div');
+                cardItem.className = 'card-item';
+                cardItem.dataset.id = card.id;
+                
+                const creationDate = new Date(card.creationDate).toLocaleDateString('fr-FR');
+                const vehicleTypeText = card.vehicleType === 'moto' ? 'Moto' : 
+                                      card.vehicleType === 'tricycle' ? 'Tricycle' : 'Autre';
+                
+                cardItem.innerHTML = `
+                    <div class="card-item-header">
+                        <div class="card-item-name">${card.fullName}</div>
+                        <div class="card-item-type">${vehicleTypeText}</div>
+                    </div>
+                    <div class="card-item-details">
+                        <div>Permis: ${card.licenseType}</div>
+                        <div>Véhicule: ${card.vehicleModel}</div>
+                        <div>Immat: ${card.vehiclePlate}</div>
+                        <div>Créé: ${creationDate}</div>
+                    </div>
+                `;
+                
+                cardItem.addEventListener('click', function() {
+                    // Retirer la classe active de tous les éléments
+                    document.querySelectorAll('.card-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Ajouter la classe active à l'élément cliqué
+                    this.classList.add('active');
+                    
+                    // Charger les données de la carte
+                    const cardId = this.dataset.id;
+                    const selectedCard = savedCards.find(card => card.id === cardId);
+                    
+                    if (selectedCard) {
+                        setFormData(selectedCard);
+                        showNotification(`Carte "${selectedCard.fullName}" chargée`, 'info');
+                    }
+                });
+                
+                cardsList.appendChild(cardItem);
+            });
+        }
+        
+        function exportCardToJson() {
+            const cardData = getFormData();
+            const jsonData = JSON.stringify(cardData, null, 2);
+            
+            // Créer un blob et un lien de téléchargement
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = `carte-conducteur-esodi-${cardData.fullName.replace(/\s+/g, '-').toLowerCase()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Carte exportée en JSON avec succès!', 'success');
+        }
+        
+        function importCardFromJson() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const cardData = JSON.parse(e.target.result);
+                        
+                        // Vérifier que les données ont la structure attendue
+                        if (!cardData.fullName || !cardData.licenseNumber) {
+                            throw new Error('Format de fichier JSON invalide');
+                        }
+                        
+                        // Charger les données dans le formulaire
+                        setFormData(cardData);
+                        showNotification('Carte importée avec succès!', 'success');
+                    } catch (error) {
+                        showNotification('Erreur lors de l\'importation du fichier JSON', 'error');
+                        console.error('Erreur d\'importation:', error);
+                    }
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            input.click();
+        }
+        
+        function openJsonEditor() {
+            const cardData = getFormData();
+            jsonEditor.value = JSON.stringify(cardData, null, 2);
+            jsonModal.style.display = 'flex';
+        }
+        
+        function closeJsonModal() {
+            jsonModal.style.display = 'none';
+        }
+        
+        function applyJsonData() {
+            try {
+                const cardData = JSON.parse(jsonEditor.value);
+                
+                // Vérifier que les données ont la structure attendue
+                if (!cardData.fullName || !cardData.licenseNumber) {
+                    throw new Error('Format JSON invalide');
+                }
+                
+                // Charger les données dans le formulaire
+                setFormData(cardData);
+                closeJsonModal();
+                showNotification('Données JSON appliquées avec succès!', 'success');
+            } catch (error) {
+                showNotification('Erreur dans le format JSON', 'error');
+                console.error('Erreur JSON:', error);
+            }
+        }
+        
+        function loadExampleJson() {
+            const exampleData = {
+                id: "example_" + Date.now(),
+                fullName: "Marie Martin",
+                licenseNumber: "987654321B",
+                licenseType: "B1",
+                licenseTypeText: "B1 (Tricycle)",
+                vehicleType: "tricycle",
+                vehicleModel: "Piaggio MP3",
+                vehicleYear: "2021",
+                vehiclePlate: "XY-789-ZT",
+                notes: "Véhicule équipé d'une boîte automatique",
+                parts: vehicleParts.tricycle.map(part => ({
+                    name: part.name,
+                    required: part.required,
+                    checked: part.name.includes("Permis") || part.name.includes("Carte grise") || part.name.includes("Assurance")
+                })),
+                creationDate: new Date().toISOString(),
+                validityDate: new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate()).toISOString(),
+                lastModified: new Date().toISOString()
+            };
+            
+            jsonEditor.value = JSON.stringify(exampleData, null, 2);
+            showNotification('Exemple JSON chargé', 'info');
+        }
+        
+        function clearAllCards() {
+            if (confirm('Êtes-vous sûr de vouloir effacer toutes les cartes sauvegardées ? Cette action est irréversible.')) {
+                savedCards = [];
+                localStorage.removeItem(STORAGE_KEY);
+                loadSavedCards();
+                showNotification('Toutes les cartes ont été effacées', 'info');
+            }
+        }
+        
+        function downloadAsPdf() {
+            // Simulation de génération de PDF
+            showNotification('Génération du PDF en cours...', 'info');
+            
+            // Dans une vraie application, on utiliserait une bibliothèque comme jsPDF
+            setTimeout(() => {
+                showNotification('PDF téléchargé avec succès!', 'success');
+            }, 1500);
+        }
+        
+        function generateQrCode() {
+            const cardData = getFormData();
+            const jsonData = JSON.stringify(cardData);
+            
+            // Simulation de génération de QR code
+            showNotification('Génération du QR Code en cours...', 'info');
+            
+            // Dans une vraie application, on utiliserait une bibliothèque comme QRCode.js
+            setTimeout(() => {
+                showNotification('QR Code généré avec succès!', 'success');
+                
+                // Afficher le QR code dans la carte
+                const qrCodeElement = document.querySelector('.qr-code');
+                qrCodeElement.innerHTML = '<i class="fas fa-qrcode"></i>';
+                qrCodeElement.style.color = '#333';
+                qrCodeElement.style.fontSize = '1.5rem';
+            }, 1000);
+        }
+        
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function fillExampleData() {
+            // Remplir le formulaire avec des données d'exemple
+            document.getElementById('fullName').value = 'Jean Dupont';
+            document.getElementById('licenseNumber').value = '123456789A';
+            document.getElementById('licenseType').value = 'A';
+            document.getElementById('vehicleModel').value = 'Yamaha MT-07';
+            document.getElementById('vehicleYear').value = '2022';
+            document.getElementById('vehiclePlate').value = 'AB-123-CD';
+            document.getElementById('notes').value = 'Véhicule équipé d\'un système anti-démarrage.';
+            
+            // Mettre à jour la prévisualisation
+            updateCardPreview();
+            
+            // Ajouter une carte d'exemple
+            const exampleCard = getFormData();
+            exampleCard.id = "example_initial";
+            savedCards.push(exampleCard);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedCards));
+            loadSavedCards();
+        }
+    </script>
+</body>
+</html>
